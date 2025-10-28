@@ -307,9 +307,16 @@
 // ----------------------------------------------------------------------------------
 // #8 Responsive Window
 
+// window.addEventListener("resize", () => {
+//   camera.aspect = window.innerWidth / window.innerHeight;
+//   renderer.setSize(window.innerWidth, window.innerHeight);
+//   camera.updateProjectionMatrix();
+// })
 
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  camera.updateProjectionMatrix();
-})
+
+
+// ----------------------------------------------------------------------------------
+// #9 DPR -> Device Pixel Ratio
+
+const renderer = new THREE.WebGLRenderer({ canvas})
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
