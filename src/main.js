@@ -257,53 +257,59 @@
 // ----------------------------------------------------------------------------------
 // #7 Cuboid with Mouse Movements
 
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/Addons.js";
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
+// import * as THREE from "three";
 
-const cuboidGeometry = new THREE.BoxGeometry(1, 3, 6);
-const cuboidMaterial = new THREE.MeshBasicMaterial({
-  color: "green",
-  wireframe: true,
-});
-const cuboid = new THREE.Mesh(cuboidGeometry, cuboidMaterial);
-scene.add(cuboid);
+// const scene = new THREE.Scene();
+// const camera = new THREE.PerspectiveCamera(
+//   75,
+//   window.innerWidth / window.innerHeight,
+//   0.1,
+//   1000
+// );
 
-const mouse = {
-  x:0,
-  y:0
-}
+// const cuboidGeometry = new THREE.BoxGeometry(1, 3, 6);
+// const cuboidMaterial = new THREE.MeshBasicMaterial({
+//   color: "green",
+//   wireframe: true,
+// });
+// const cuboid = new THREE.Mesh(cuboidGeometry, cuboidMaterial);
+// scene.add(cuboid);
 
-window.addEventListener("mousemove", (e) => {
-  mouse.x = e.clientX/window.innerWidth;
-  mouse.y = e.clientY/innerHeight;
+// const mouse = {
+//   x:0,
+//   y:0
+// }
+
+// window.addEventListener("mousemove", (e) => {
+//   mouse.x = e.clientX/window.innerWidth;
+//   mouse.y = e.clientY/innerHeight;
+// })
+
+// camera.position.z = 8;
+
+// const canvas = document.querySelector(".world");
+// const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+// renderer.setSize(window.innerWidth, window.innerHeight);
+
+
+// function animate() {
+//   window.requestAnimationFrame(animate);
+
+//   cuboid.lookAt(new THREE.Vector3(mouse.x - 0.5, -mouse.y + 0.5, 1));
+
+//   renderer.render(scene, camera);
+// }
+// renderer.setAnimationLoop(animate);
+
+
+
+// ----------------------------------------------------------------------------------
+// #8 Responsive Window
+
+
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.updateProjectionMatrix();
 })
-
-camera.position.z = 8;
-
-const canvas = document.querySelector(".world");
-const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-
-function animate() {
-  window.requestAnimationFrame(animate);
-
-  cuboid.lookAt(new THREE.Vector3(mouse.x - 0.5, -mouse.y + 0.5, 1));
-
-  renderer.render(scene, camera);
-}
-renderer.setAnimationLoop(animate);
-
-
-
-
-
-
-
