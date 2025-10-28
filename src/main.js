@@ -318,5 +318,93 @@
 // ----------------------------------------------------------------------------------
 // #9 DPR -> Device Pixel Ratio
 
-const renderer = new THREE.WebGLRenderer({ canvas})
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+// const renderer = new THREE.WebGLRenderer({ canvas})
+// renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+
+
+
+// ----------------------------------------------------------------------------------
+// #10 Orbit Controls (in Detail)
+
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/Addons.js";
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
+
+const cuboidGeometry = new THREE.BoxGeometry(1, 3, 6);
+const cuboidMaterial = new THREE.MeshBasicMaterial({
+  color: "green",
+  wireframe: true,
+});
+const cuboid = new THREE.Mesh(cuboidGeometry, cuboidMaterial);
+scene.add(cuboid);
+
+camera.position.z = 8;
+
+const canvas = document.querySelector(".world");
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+
+// Restricting the angles of rotation horizontally (left and right)
+// minAzimuthAngle -> Left Limit
+// maxAzimuthAngle -> Right Limit
+
+
+// #1 -Left (-45°) = Right (45°) (Opposite direction of left)
+controls.minAzimuthAngle = -Math.PI / 4;
+controls.maxAzimuthAngle = 0;
+
+// #2 Right (45°) = -Left (-45°) (Opposite direction of right) || Similar to #1
+controls.minAzimuthAngle = 0;
+controls.maxAzimuthAngle = Math.PI / 4;
+
+
+// #3 Left (45°) (Rotate from front 0° to Right until 45° or till 270° at the end on left) 
+controls.minAzimuthAngle = Math.PI / 4;
+controls.maxAzimuthAngle = 0;
+
+
+// #4 -Right (-45°) (Rotate from front 0° to Left until 45° or till 270° at the end on Right) || Similar to #3
+controls.minAzimuthAngle = 0;
+controls.maxAzimuthAngle = -Math.PI / 4;
+
+// #5 No Horizontal Rotation
+controls.minAzimuthAngle = 0;
+controls.maxAzimuthAngle = 0;
+
+
+// Restricting the angles of rotation vertically (up and down)
+minAzimuthAngle -> Left Limit
+maxAzimuthAngle -> Right Limit
+
+
+controls.minPolarAngle = Math.PI / 4;
+controls.maxPolarAngle = Math.PI / 1.25;
+
+
+// Mainly works on orthographic camera
+controls.minZoom= 6;
+controls.maxZoom = 20;
+
+
+controls.minDistance = 6; //zoom in limit
+controls.maxDistance = 20; // zoom out limit
+
+
+function animate() {
+  window.requestAnimationFrame(animate);
+
+  renderer.render(scene, camera);
+}
+renderer.setAnimationLoop(animate);
