@@ -101,6 +101,50 @@
 
 // ----------------------------------------------------------------------------------
 // #4 Orbit Controls
+// import * as THREE from "three";
+// import { OrbitControls } from "three/examples/jsm/Addons.js";
+
+// const scene = new THREE.Scene();
+// const camera = new THREE.PerspectiveCamera(
+//   75,
+//   window.innerWidth/window.innerHeight,
+//   0.1,
+//   1000
+// )
+
+// const cubeGeometry = new THREE.BoxGeometry(1,1,1);
+// const cubeMaterial = new THREE.MeshBasicMaterial({color: "pink"});
+// const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+// scene.add(cube);
+
+// camera.position.z = 5
+
+// const canvas = document.querySelector(".world");
+// const renderer = new THREE.WebGLRenderer({canvas, antialias: true});
+// renderer.setSize(window.innerWidth, window.innerHeight);
+
+// const controls = new OrbitControls(camera, renderer.domElement);
+// controls.enablingDamping = true;
+// controls.dampingFactor = 0.05;
+
+// const clock = new THREE.Clock();
+
+// function animate(){
+//   requestAnimationFrame(animate);
+//   cube.rotation.y = clock.getElapsedTime();
+//   controls.update();
+//   renderer.render(scene,camera);
+// }
+
+// animate();
+
+
+
+
+
+// ----------------------------------------------------------------------------------
+// #5 Axis Helpers
+
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
@@ -111,6 +155,9 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 )
+
+const axesHelper = new THREE.AxesHelper(5); // Creates axes of size 5
+scene.add(axesHelper);
 
 const cubeGeometry = new THREE.BoxGeometry(1,1,1);
 const cubeMaterial = new THREE.MeshBasicMaterial({color: "pink"});
@@ -137,6 +184,7 @@ function animate(){
 }
 
 animate();
+
 
 
 
