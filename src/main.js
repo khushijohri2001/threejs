@@ -417,8 +417,89 @@
 // ----------------------------------------------------------------------------------
 // #11 LIL GUI
 
-import * as THREE from "three";
+// import * as THREE from "three";
+// import GUI from "lil-gui";
+
+// const scene = new THREE.Scene();
+// const camera = new THREE.PerspectiveCamera(
+//   75,
+//   window.innerWidth / window.innerHeight,
+//   0.1,
+//   1000
+// );
+
+// const cuboidGeometry = new THREE.BoxGeometry(1, 3, 6);
+// const cuboidMaterial = new THREE.MeshBasicMaterial({
+//   color: "#d80e54",
+// });
+// const cuboid = new THREE.Mesh(cuboidGeometry, cuboidMaterial);
+// scene.add(cuboid);
+
+// camera.position.z = 8;
+
+// const canvas = document.querySelector(".world");
+// const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+// renderer.setSize(window.innerWidth, window.innerHeight);
+
+// const gui = new GUI();
+
+// const params = {
+//   width: 1,
+//   height: 3,
+//   depth: 6,
+//   color: "##d80e54",
+//   wireframe: false,
+//   rotationX: 0,
+//   rotationY: 0,
+//   rotationZ: 0,
+// }
+
+// function updateCuboid(){
+//   cuboid.geometry.dispose();
+//   cuboid.geometry = new THREE.BoxGeometry(
+//     params.width,
+//     params.height,
+//     params.depth
+//   )
+// }
+
+// gui.add(params, "width", 1, 10).onChange(updateCuboid);
+// gui.add(params, "height", 1, 10).onChange(updateCuboid);
+// gui.add(params, "depth", 1, 10).onChange(updateCuboid);
+// gui.addColor(params, "color").onChange(() => {
+//   cuboid.material.color.set(params.color)
+// })
+// gui.add(params, "wireframe", true).onChange(() => {
+//   cuboid.material.wireframe = params.wireframe;
+// })
+// gui.add(params, "rotationX", -Math.PI, Math.PI).onChange((value) => {
+//   cuboid.rotation.x = value;
+// })
+// gui.add(params, "rotationY", -Math.PI, Math.PI).onChange((value) => {
+//   cuboid.rotation.y = value;
+// })
+// gui.add(params, "rotationZ", -Math.PI, Math.PI).onChange((value) => {
+//   cuboid.rotation.z = value;
+// });
+
+
+
+// function animate() {
+//   window.requestAnimationFrame(animate);
+
+//   renderer.render(scene, camera);
+// }
+// renderer.setAnimationLoop(animate);
+
+
+
+
+// ----------------------------------------------------------------------------------
+// #12 Lights
+
 import GUI from "lil-gui";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -428,9 +509,28 @@ const camera = new THREE.PerspectiveCamera(
   1000
 );
 
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+directionalLight.position.set(5,2,-10);
+scene.add(directionalLight)
+
+const pointLight = new THREE.PointLight(0xffffff, 10);
+pointLight.position.set(-1, -2, -3);
+scene.add(pointLight);
+
+const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.5);
+scene.add(pointLightHelper);
+
+
+
 const cuboidGeometry = new THREE.BoxGeometry(1, 3, 6);
-const cuboidMaterial = new THREE.MeshBasicMaterial({
+const cuboidMaterial = new THREE.MeshPhysicalMaterial({
   color: "#d80e54",
+  reflectivity: 0.5,
+  roughness: 0.2,
+  metalness: 0.7,
 });
 const cuboid = new THREE.Mesh(cuboidGeometry, cuboidMaterial);
 scene.add(cuboid);
@@ -441,47 +541,31 @@ const canvas = document.querySelector(".world");
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+
 const gui = new GUI();
 
 const params = {
-  width: 1,
-  height: 3,
-  depth: 6,
-  color: "##d80e54",
-  wireframe: false,
-  rotationX: 0,
-  rotationY: 0,
-  rotationZ: 0,
+  lightX: pointLight.position.x,
+  lightY: pointLight.position.y,
+  lightZ: pointLight.position.z,
+  lightIntensity: pointLight.intensity,
 }
 
-function updateCuboid(){
-  cuboid.geometry.dispose();
-  cuboid.geometry = new THREE.BoxGeometry(
-    params.width,
-    params.height,
-    params.depth
-  )
-}
-
-gui.add(params, "width", 1, 10).onChange(updateCuboid);
-gui.add(params, "height", 1, 10).onChange(updateCuboid);
-gui.add(params, "depth", 1, 10).onChange(updateCuboid);
-gui.addColor(params, "color").onChange(() => {
-  cuboid.material.color.set(params.color)
+gui.add(params, "lightX", -10, 10).onChange((value) => {
+  pointLight.position.x = value;
 })
-gui.add(params, "wireframe", true).onChange(() => {
-  cuboid.material.wireframe = params.wireframe;
+gui.add(params, "lightY", -10, 10).onChange((value) => {
+  pointLight.position.y = value;
 })
-gui.add(params, "rotationX", -Math.PI, Math.PI).onChange((value) => {
-  cuboid.rotation.x = value;
+gui.add(params, "lightZ", -10, 10).onChange((value) => {
+  pointLight.position.z = value;
 })
-gui.add(params, "rotationY", -Math.PI, Math.PI).onChange((value) => {
-  cuboid.rotation.y = value;
+gui.add(params, "lightIntensity", 0, 20).onChange((value) => {
+  pointLight.intensity = value;
 })
-gui.add(params, "rotationZ", -Math.PI, Math.PI).onChange((value) => {
-  cuboid.rotation.z = value;
-});
-
 
 
 function animate() {
