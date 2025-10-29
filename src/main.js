@@ -494,10 +494,93 @@
 
 
 
-// ----------------------------------------------------------------------------------
-// #12 Lights
+// // ----------------------------------------------------------------------------------
+// // #12 Lights
 
-import GUI from "lil-gui";
+// import GUI from "lil-gui";
+// import * as THREE from "three";
+// import { OrbitControls } from "three/examples/jsm/Addons.js";
+
+// const scene = new THREE.Scene();
+// const camera = new THREE.PerspectiveCamera(
+//   75,
+//   window.innerWidth / window.innerHeight,
+//   0.1,
+//   1000
+// );
+
+// const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+// scene.add(ambientLight);
+
+// const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+// directionalLight.position.set(5,2,-10);
+// scene.add(directionalLight)
+
+// const pointLight = new THREE.PointLight(0xffffff, 10);
+// pointLight.position.set(-1, -2, -3);
+// scene.add(pointLight);
+
+// const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.5);
+// scene.add(pointLightHelper);
+
+
+
+// const cuboidGeometry = new THREE.BoxGeometry(1, 3, 6);
+// const cuboidMaterial = new THREE.MeshPhysicalMaterial({
+//   color: "#d80e54",
+//   reflectivity: 0.5,
+//   roughness: 0.2,
+//   metalness: 0.7,
+// });
+// const cuboid = new THREE.Mesh(cuboidGeometry, cuboidMaterial);
+// scene.add(cuboid);
+
+// camera.position.z = 8;
+
+// const canvas = document.querySelector(".world");
+// const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+// renderer.setSize(window.innerWidth, window.innerHeight);
+
+// const controls = new OrbitControls(camera, renderer.domElement);
+// controls.enableDamping = true;
+// controls.dampingFactor = 0.05;
+
+// const gui = new GUI();
+
+// const params = {
+//   lightX: pointLight.position.x,
+//   lightY: pointLight.position.y,
+//   lightZ: pointLight.position.z,
+//   lightIntensity: pointLight.intensity,
+// }
+
+// gui.add(params, "lightX", -10, 10).onChange((value) => {
+//   pointLight.position.x = value;
+// })
+// gui.add(params, "lightY", -10, 10).onChange((value) => {
+//   pointLight.position.y = value;
+// })
+// gui.add(params, "lightZ", -10, 10).onChange((value) => {
+//   pointLight.position.z = value;
+// })
+// gui.add(params, "lightIntensity", 0, 20).onChange((value) => {
+//   pointLight.intensity = value;
+// })
+
+
+// function animate() {
+//   window.requestAnimationFrame(animate);
+
+//   renderer.render(scene, camera);
+// }
+// renderer.setAnimationLoop(animate);
+
+
+
+
+// ----------------------------------------------------------------------------------
+// #13 Raycaster and Mouse Interactions
+
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
@@ -513,27 +596,34 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
-directionalLight.position.set(5,2,-10);
+directionalLight.position.set(5,2,10);
 scene.add(directionalLight)
-
-const pointLight = new THREE.PointLight(0xffffff, 10);
-pointLight.position.set(-1, -2, -3);
-scene.add(pointLight);
-
-const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.5);
-scene.add(pointLightHelper);
 
 
 
 const cuboidGeometry = new THREE.BoxGeometry(1, 3, 6);
 const cuboidMaterial = new THREE.MeshPhysicalMaterial({
-  color: "#d80e54",
+  color: 0xff0000,
   reflectivity: 0.5,
   roughness: 0.2,
   metalness: 0.7,
 });
 const cuboid = new THREE.Mesh(cuboidGeometry, cuboidMaterial);
 scene.add(cuboid);
+
+cuboid.position.set(-3,0,0);
+
+const sphereGeometry = new THREE.SphereGeometry(1, 60, 60);
+const sphereMaterial = new THREE.MeshPhysicalMaterial({
+  color: 0x00ff00,
+  reflectivity: 0.5,
+  roughness: 0.2,
+  metalness: 0.7,
+});
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+scene.add(sphere);
+
+sphere.position.set(3,0,0);
 
 camera.position.z = 8;
 
@@ -545,28 +635,41 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 
-const gui = new GUI();
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
 
-const params = {
-  lightX: pointLight.position.x,
-  lightY: pointLight.position.y,
-  lightZ: pointLight.position.z,
-  lightIntensity: pointLight.intensity,
+let previousIntersect = null;
+  let originalColor = null;
+
+function onPointerMove(event){
+  pointer.x= ((event.clientX /window.innerWidth) * 2) - 1;
+  pointer.y= -((event.clientY /window.innerHeight) * 2) + 1; 
+
+
+  raycaster.setFromCamera(pointer, camera);
+  let intersect = raycaster.intersectObjects([cuboid, sphere]);
+
+
+  if(intersect.length > 0){
+    if(previousIntersect !== intersect[0].object){
+      if(previousIntersect){
+        previousIntersect.material.color.set(originalColor);
+      }
+
+      previousIntersect = intersect[0]?.object;
+      originalColor = intersect[0]?.object.material.color.getHex();
+      intersect[0]?.object.material.color.set(0xffff00);
+    } else{
+      if(previousIntersect){
+        previousIntersect.material.color.set(originalColor);
+        previousIntersect = null;
+    }
+  }
+  
+}
 }
 
-gui.add(params, "lightX", -10, 10).onChange((value) => {
-  pointLight.position.x = value;
-})
-gui.add(params, "lightY", -10, 10).onChange((value) => {
-  pointLight.position.y = value;
-})
-gui.add(params, "lightZ", -10, 10).onChange((value) => {
-  pointLight.position.z = value;
-})
-gui.add(params, "lightIntensity", 0, 20).onChange((value) => {
-  pointLight.intensity = value;
-})
-
+window.addEventListener('mousemove', onPointerMove);
 
 function animate() {
   window.requestAnimationFrame(animate);
