@@ -723,7 +723,7 @@ import fragment from "./shaders/fragment.glsl";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
-  50,
+  30,
   window.innerWidth/window.innerHeight,
   0.1,
   1000
@@ -732,7 +732,10 @@ const camera = new THREE.PerspectiveCamera(
 const cubeGeometry = new THREE.PlaneGeometry(1,1);
 const cubeMaterial = new THREE.ShaderMaterial({
     vertexShader: vertex,
-    fragmentShader: fragment
+    fragmentShader: fragment,
+    uniforms: {
+        uTime: { value: 0}
+    }
 });
 const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 scene.add(cube);
@@ -743,5 +746,12 @@ const canvas = document.querySelector(".world");
 const renderer = new THREE.WebGLRenderer({canvas});
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-renderer.render(scene,camera);
+
+
+function animate() {
+    requestAnimationFrame(animate);
+    cubeMaterial.uniforms.uTime.value += 0.1;
+    renderer.render(scene, camera);
+}
+animate();
 
