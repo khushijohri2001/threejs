@@ -683,6 +683,40 @@
 // ----------------------------------------------------------------------------------
 // #14 Basic Shaders
 
+// import * as THREE from "three";
+// import vertex from "./shaders/vertex.glsl";
+// import fragment from "./shaders/fragment.glsl";
+
+// const scene = new THREE.Scene();
+// const camera = new THREE.PerspectiveCamera(
+//   50,
+//   window.innerWidth/window.innerHeight,
+//   0.1,
+//   1000
+// )
+
+// const cubeGeometry = new THREE.PlaneGeometry(1,1);
+// const cubeMaterial = new THREE.ShaderMaterial({
+//     vertexShader: vertex,
+//     fragmentShader: fragment
+// });
+// const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+// scene.add(cube);
+
+// camera.position.z = 5
+
+// const canvas = document.querySelector(".world");
+// const renderer = new THREE.WebGLRenderer({canvas});
+// renderer.setSize(window.innerWidth, window.innerHeight);
+
+// renderer.render(scene,camera);
+
+
+
+
+// ----------------------------------------------------------------------------------
+// #15 Mix colors in Shaders
+
 import * as THREE from "three";
 import vertex from "./shaders/vertex.glsl";
 import fragment from "./shaders/fragment.glsl";
